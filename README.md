@@ -27,3 +27,7 @@ a cloud-enabled Hubitat Elevation device to change the color of a IoT RGB light 
 
 1. Magical Azure Incantation 1
 2. Magical Azure Incantation 2
+
+# 4. Acknowledgements
+
+- Lots of the Microsoft.Graph beta code was adapted from the excellent work over at [https://github.com/isaacrlevin/PresenceLight/](https://github.com/isaacrlevin/PresenceLight/)
