@@ -1,29 +1,23 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace OnAirLight.CommandLine.Config
 {
     public static class ConfigService
     {
-        public static AppConfig LoadAppSettings()
+        public static AppConfig LoadAppSettings(string[] args)
         {
-            var appConfig = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddUserSecrets<Program>()
+                .AddCommandLine(args)
                 .Build();
 
-            // Check for required settings
-            if (
-                string.IsNullOrEmpty(appConfig["appId"])
-                || string.IsNullOrEmpty(appConfig["scopes"])
-                || string.IsNullOrEmpty(appConfig["tenantId"])
-                || string.IsNullOrEmpty(appConfig["userId"])
-                )
-            {
-                throw new InvalidConfigurationException();
-            }
 
             var config = new AppConfig();
 
-            appConfig.Bind(config);
+            builder.Bind(config);
 
             return config;
         }

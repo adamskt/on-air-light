@@ -22,13 +22,7 @@ a cloud-enabled Hubitat Elevation device to change the color of a IoT RGB light 
 
 1. Register an application in AAD in the Azure Portal
 
-2. Add the following values into your user secrets for this app:
-
-```dotnet user-secrets set appId "Application (client) ID from above"```
-```dotnet user-secrets set tenantId "Directory (tenant) ID from above"```
-```dotnet user-secrets set scopes "User.Read;Calendars.Read"```
-```dotnet user-secrets set userId "The ObjectID of the AAD account you want to see presence info for."```
-
+2. Edit the appsettings.json with your own values.
 
 # 3. Building
 

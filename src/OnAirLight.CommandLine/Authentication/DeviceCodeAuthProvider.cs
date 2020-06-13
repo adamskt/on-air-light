@@ -9,8 +9,8 @@ namespace OnAirLight.CommandLine.Authentication
 {
     public class DeviceCodeAuthProvider : IAuthenticationProvider
     {
-        private IPublicClientApplication _msalClient;
-        private string[] _scopes;
+        private readonly IPublicClientApplication _msalClient;
+        private readonly string[] _scopes;
         private IAccount _userAccount;
 
         public DeviceCodeAuthProvider(string appId, string tenantId, string[] scopes)
