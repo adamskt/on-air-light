@@ -3,17 +3,19 @@ using OnAirLight.CommandLine.Config;
 using OnAirLight.CommandLine.Graph;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OnAirLight.CommandLine
 {
     public class Program
     {
-        const int TwoMinutes = 120 * 1000;
 
-        static async Task Main(string[] args)
+        private const int TimerSleepMilleseconds = 20 * 1000;
+
+        private static readonly AppConfig _appConfig = ConfigService.LoadAppSettings();
+
+        static void Main(string[] args)
         {
-            Console.WriteLine("Initializing from config...");
+            WriteLine("Initializing from config...");
 
             var appConfig = ConfigService.LoadAppSettings();
 
@@ -22,22 +24,29 @@ namespace OnAirLight.CommandLine
 
             var graphService = new GraphService(authProvider);
 
-            Console.WriteLine("Starting 2 minute timer");
+            WriteLine($"Starting timer after {TimerSleepMilleseconds}ms.");
 
-
-            var timer = new Timer(async (state)=> 
+            using (var timer = new Timer(PollForPresence, graphService, TimerSleepMilleseconds, TimerSleepMilleseconds))
             {
-                var service = (GraphService) state;
-                var result = await service.GetPresenceAsync(appConfig.UserId);
+                Console.WriteLine("Press any key to exit...");
+                Console.ReadLine();
+            }
+        }
 
-                Console.WriteLine($"Availability: {result.Availability}");
-                Console.WriteLine($"Activity: {result.Activity}");
-            }, graphService, 100, TwoMinutes);
+        public static async void PollForPresence(object state)
+        {
+            WriteLine("Polling for presence info...");
+            var service = (GraphService)state;
+            var result = await service.GetPresenceAsync(_appConfig.UserId);
 
-            Console.ReadLine();
-            timer.Dispose();
+            WriteLine($"Polling complete = Availability: {result.Availability}, Activity: {result.Activity}");
 
 
+        }
+
+        private static void WriteLine(string message)
+        {
+            Console.WriteLine($"{DateTime.Now:O} - {message}");
         }
     }
 }
