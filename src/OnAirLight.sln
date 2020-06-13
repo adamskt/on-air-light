@@ -7,8 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnAirLight.AzureFunction", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03A605F1-412F-4B26-849E-3B13D7CC56F0}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\README.md = ..\..\README.md
+		..\README.md = ..\README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnAirLight.CommandLine", "OnAirLight.CommandLine\OnAirLight.CommandLine.csproj", "{070FC31D-DACF-4FB5-9B43-DBECD5BDC37A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{314B7CA3-E1E8-4CFA-BD39-C56D4E77FB4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{314B7CA3-E1E8-4CFA-BD39-C56D4E77FB4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{314B7CA3-E1E8-4CFA-BD39-C56D4E77FB4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{070FC31D-DACF-4FB5-9B43-DBECD5BDC37A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{070FC31D-DACF-4FB5-9B43-DBECD5BDC37A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{070FC31D-DACF-4FB5-9B43-DBECD5BDC37A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{070FC31D-DACF-4FB5-9B43-DBECD5BDC37A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

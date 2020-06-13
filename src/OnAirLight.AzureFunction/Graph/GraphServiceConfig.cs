@@ -10,6 +10,6 @@
 
         public string TenantId { get; set; }
 
-        public string Authority => $"https://login.microsoftonline.com/{TenantId}/v2.0";
+        public string Authority => $"https://login.microsoftonline.com/{TenantId}/oauth2/v2.0";
     }
 }

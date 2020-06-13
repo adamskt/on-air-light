@@ -31,8 +31,25 @@ namespace OnAirLight.AzureFunction.Graph
         /// </summary>
         public async Task<string> GetTokenAsync()
         {
-            AuthenticationResult authResult = await ClientApplication.AcquireTokenForClient(Scopes)
-                                .ExecuteAsync();
+            AuthenticationResult authResult = null;
+            try
+            {
+                authResult = await ClientApplication.AcquireTokenForClient(Scopes)
+                                   .ExecuteAsync();
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // The application doesn't have sufficient permissions.
+                // - Did you declare enough app permissions during app creation?
+                // - Did the tenant admin grant permissions to the application?
+            }
+            catch (MsalServiceException ex) when (ex.Message.Contains("AADSTS70011"))
+            {
+                // Invalid scope. The scope has to be in the form "https://resourceurl/.default"
+                // Mitigation: Change the scope to be as expected.
+            }
+
+
             return authResult.AccessToken;
         }
     }

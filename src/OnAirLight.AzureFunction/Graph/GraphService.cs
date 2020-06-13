@@ -28,7 +28,8 @@ namespace OnAirLight.AzureFunction.Graph
             var scopes = new[] { "https://graph.microsoft.com/.default" };
 
             var builder = ConfidentialClientApplicationBuilder.Create(Config.ClientId)
-                                              .WithAuthority(Config.Authority)
+                                              .WithAuthority(AzureCloudInstance.AzurePublic, Config.TenantId)
+                                              //.WithAuthority(Config.Authority)
                                               //.WithRedirectUri(Config.RedirectUri)
                                               .WithClientSecret(Config.ClientSecret)
                                               .WithLogging(MyLoggingMethod, LogLevel.Info,
@@ -47,12 +48,12 @@ namespace OnAirLight.AzureFunction.Graph
         public async Task<(string Availability, string Activity)> GetPresence(string userId)
         {
 
-            List<QueryOption> options = new List<QueryOption>
-            {
-                new QueryOption("$top", "1")
-            };
+            //List<QueryOption> options = new List<QueryOption>
+            //{
+            //    new QueryOption("$top", "1")
+            //};
 
-            var graphResult = await Client.Users.Request(options).GetAsync();
+            //var graphResult = await Client.Users.Request(options).GetAsync();
 
             var response = await Client.Communications.GetPresencesByUserId(new[] { userId })
                 .Request()
