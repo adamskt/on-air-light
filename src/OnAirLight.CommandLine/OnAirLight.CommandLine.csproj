@@ -1,8 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>1b178334-8d49-4077-9518-56145b85bf8c</UserSecretsId>
   </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Graph.Beta" Version="0.18.0-preview" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.14.0" />
+  </ItemGroup>
 </Project>
