@@ -1,4 +1,6 @@
 ﻿using Microsoft.Graph;
+using OnAirLight.CommandLine.Authentication;
+using OnAirLight.CommandLine.Config;
 using System;
 using System.Threading.Tasks;
 
@@ -6,15 +8,15 @@ namespace OnAirLight.CommandLine.Graph
 {
     public class GraphService
     {
-
         private readonly GraphServiceClient _graphClient;
 
-        public GraphService(IAuthenticationProvider authProvider)
+        public GraphService(AppConfig config)
         {
+            var authProvider = new DeviceCodeAuthProvider(config.Azure.AppId, config.Azure.TenantId, config.Azure.AllScopes);
             _graphClient = new GraphServiceClient(authProvider);
         }
 
-         public async Task<(string Availability, string Activity)> GetPresenceAsync(string userId)
+        public async Task<(Availability availability, string activity)> GetPresenceAsync(string userId)
         {
             var response = await _graphClient.Communications.GetPresencesByUserId(new[] { userId })
                 .Request()
@@ -31,7 +33,9 @@ namespace OnAirLight.CommandLine.Graph
                 throw new InvalidOperationException($"Multiple presence results for user ID '{userId}'");
             }
 
-            return (response[0].Availability, response[0].Activity);
+            var availability = Enum.Parse<Availability>(response[0].Availability, true);
+
+            return (availability, response[0].Activity);
         }
 
     }

@@ -1,8 +1,10 @@
-﻿using OnAirLight.CommandLine.Authentication;
-using OnAirLight.CommandLine.Config;
+﻿using OnAirLight.CommandLine.Config;
 using OnAirLight.CommandLine.Graph;
+using OnAirLight.CommandLine.Hubitat;
 using System;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OnAirLight.CommandLine
 {
@@ -11,22 +13,30 @@ namespace OnAirLight.CommandLine
 
         private const int TimerSleepMilleseconds = 20 * 1000;
 
-        private static readonly AppConfig _appConfig = ConfigService.LoadAppSettings();
+        private static AppConfig AppConfig { get; set; }
+        private static GraphService GraphService { get; set; }
+        private static HubitatService Hubitat { get; set; }
+        private static Device TargetDevice { get; set; }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             WriteLine("Initializing from config...");
 
-            var appConfig = ConfigService.LoadAppSettings();
+            AppConfig = ConfigService.LoadAppSettings(args);
 
-            // Initialize the auth provider with values from appsettings.json
-            var authProvider = new DeviceCodeAuthProvider(appConfig.AppId, appConfig.TenantId, appConfig.AllScopes);
+            GraphService = new GraphService(AppConfig);
 
-            var graphService = new GraphService(authProvider);
+            Hubitat = new HubitatService(AppConfig);
 
-            WriteLine($"Starting timer after {TimerSleepMilleseconds}ms.");
+            var devices = await Hubitat.GetDevicesAsync();
 
-            using (var timer = new Timer(PollForPresence, graphService, TimerSleepMilleseconds, TimerSleepMilleseconds))
+            TargetDevice = devices.Single(x => string.Equals(x.Name, AppConfig.Hubitat.DeviceName, StringComparison.OrdinalIgnoreCase));
+
+            await Hubitat.SendDeviceInitAsync(TargetDevice);
+
+            WriteLine($"Starting timer after 100 ms.");
+
+            using (var timer = new Timer(PollForPresence, Availability.PresenceUnknown, 100, TimerSleepMilleseconds))
             {
                 Console.WriteLine("Press any key to exit...");
                 Console.ReadLine();
@@ -35,13 +45,53 @@ namespace OnAirLight.CommandLine
 
         public static async void PollForPresence(object state)
         {
+            var lastAvailability = (Availability) state;
             WriteLine("Polling for presence info...");
-            var service = (GraphService)state;
-            var result = await service.GetPresenceAsync(_appConfig.UserId);
+            var result = await GraphService.GetPresenceAsync(AppConfig.Azure.UserId);
 
-            WriteLine($"Polling complete = Availability: {result.Availability}, Activity: {result.Activity}");
+            WriteLine($"Polling complete = Availability: {result.availability}, Activity: {result.activity}");
+
+            if (lastAvailability != result.availability)
+            {
+                await ChangeLightColor(result.availability);
+            }
+
+            state = result;
 
 
+        }
+
+        private static async Task ChangeLightColor(Availability availability)
+        {
+            switch (availability)
+            {
+                case Availability.Available:
+                    await Hubitat.SendDevicePreset(TargetDevice, Preset.GreenFade);
+                    break;
+                case Availability.AvailableIdle:
+                    await Hubitat.SendDevicePreset(TargetDevice, Preset.GreenFade);
+                    break;
+                case Availability.Away:
+                    await Hubitat.SendDevicePreset(TargetDevice, Preset.YellowFade);
+                    break;
+                case Availability.BeRightBack:
+                    break;
+                case Availability.Busy:
+                    await Hubitat.SendDevicePreset(TargetDevice, Preset.RedFade);
+                    break;
+                case Availability.BusyIdle:
+                    await Hubitat.SendDevicePreset(TargetDevice, Preset.RedFade);
+                    break;
+                case Availability.DoNotDisturb:
+                    await Hubitat.SendDevicePreset(TargetDevice, Preset.RedFade);
+                    break;
+                case Availability.Offline:
+                    break;
+                case Availability.PresenceUnknown:
+                    break;
+                default:
+                    break;
+            }
         }
 
         private static void WriteLine(string message)

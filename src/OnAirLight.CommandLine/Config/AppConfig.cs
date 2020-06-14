@@ -19,6 +19,7 @@
     {
         public string Id { get; set; }
         public string Token { get; set; }
-        public string Address { get; set; }
+        public string NameOrIp { get; set; }
+        public string DeviceName { get; set; }
     }
 }
