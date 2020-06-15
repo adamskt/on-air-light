@@ -1,4 +1,6 @@
-﻿namespace OnAirLight.CommandLine.Config
+﻿using System.Collections.Generic;
+
+namespace OnAirLight.CommandLine.Config
 {
     public class AppConfig
     {
@@ -21,5 +23,6 @@
         public string Token { get; set; }
         public string NameOrIp { get; set; }
         public string DeviceName { get; set; }
+        public Dictionary<string, string> StatusMap { get; set; }
     }
 }

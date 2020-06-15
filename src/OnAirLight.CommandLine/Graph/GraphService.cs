@@ -16,7 +16,7 @@ namespace OnAirLight.CommandLine.Graph
             _graphClient = new GraphServiceClient(authProvider);
         }
 
-        public async Task<(Availability availability, string activity)> GetPresenceAsync(string userId)
+        public async Task<(string availability, string activity)> GetPresenceAsync(string userId)
         {
             var response = await _graphClient.Communications.GetPresencesByUserId(new[] { userId })
                 .Request()
@@ -33,9 +33,7 @@ namespace OnAirLight.CommandLine.Graph
                 throw new InvalidOperationException($"Multiple presence results for user ID '{userId}'");
             }
 
-            var availability = Enum.Parse<Availability>(response[0].Availability, true);
-
-            return (availability, response[0].Activity);
+            return (response[0].Availability, response[0].Activity);
         }
 
     }

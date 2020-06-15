@@ -57,9 +57,9 @@ namespace OnAirLight.CommandLine.Hubitat
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task SendDevicePreset(Device device, Preset preset)
+        public async Task SendDevicePreset(Device device, string preset)
         {
-            var requestUri = new UriBuilder($"{BaseMakerApiAddress}/devices/{device.Id}/preset{preset}");
+            var requestUri = new UriBuilder($"{BaseMakerApiAddress}/devices/{device.Id}/{preset}");
             requestUri.Query = AccessToken;
 
             var response = await Client.GetAsync(requestUri.Uri);
