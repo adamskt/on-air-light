@@ -70,6 +70,7 @@ C:\> dotnet build
   ````console
 C:\> dotnet publish
   ````
+4. Run the binary.  When prompted, visit https://microsoft.com/devicelogin and enter the displayed code to grant use of your AAD account to query for MS Teams presence information.
 
 # 4. Acknowledgements
 - This [blog post](https://developer.microsoft.com/en-us/graph/blogs/microsoft-graph-presence-apis-are-now-available-in-public-preview/?WT.mc_id=-blog-scottha)
